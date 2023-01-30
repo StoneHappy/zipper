@@ -38,7 +38,13 @@
 #include <iostream>
 #include <fstream>
 
-#include <tinyply.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Polygon_mesh_processing/IO/polygon_mesh_io.h>
+#include <CGAL/Polygon_mesh_processing/polygon_mesh_to_polygon_soup.h>
+#include <CGAL/Surface_mesh.h>
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+typedef Kernel::Point_3 Point_3;
+
 // Internal
 #include "ply_wrapper.h"
 #include "raw.h"
@@ -875,38 +881,74 @@ void delete_ply_geom(RangeData* plydata)
 
 int read_ply(char* filename)
 {
-    std::string filepath = filename;
-    std::cout << "........................................................................\n";
-    std::cout << "Now Reading: " << filepath << std::endl;
 
-    std::unique_ptr<std::istream> file_stream;
-    std::vector<uint8_t> byte_buffer;
-    
-    file_stream.reset(new std::ifstream(filepath, std::ios::binary));
+    Scan* sc;
+    Mesh* mesh;
 
-    if (!file_stream || file_stream->fail()) throw std::runtime_error("file_stream failed to open " + filepath);
+    sc = new_scan(filename, POLYFILE);
+    CGAL::Surface_mesh<Point_3> input_mesh;
+    CGAL::Polygon_mesh_processing::IO::read_polygon_mesh(filename, input_mesh);
+    typedef std::array<std::size_t, 3> Facet; // Èý½ÇÃæË÷Òý
+    std::vector<Point_3> vertices;
+    std::vector<Facet> facets;
+    CGAL::Polygon_mesh_processing::polygon_mesh_to_polygon_soup(input_mesh, vertices, facets);
+    /* make one mesh */
+    sc->meshes[mesh_level] = (Mesh*)malloc(sizeof(Mesh));
+    mesh = sc->meshes[mesh_level];
 
-    file_stream->seekg(0, std::ios::end);
-    const float size_mb = file_stream->tellg() * float(1e-6);
-    file_stream->seekg(0, std::ios::beg);
+    /* read in the vertices */
+    mesh->nverts = 0;
+    mesh->max_verts = vertices.size() + 100;
+    mesh->verts = (Vertex**)malloc(sizeof(Vertex*) * mesh->max_verts);
 
-    tinyply::PlyFile file;
-    file.parse_header(*file_stream);
+    mesh->ntris = 0;
+    mesh->max_tris = facets.size() + 100;
+    mesh->tris = (Triangle**)malloc(sizeof(Triangle*) * mesh->max_tris);
 
-    std::cout << "\t[ply_header] Type: " << (file.is_binary_file() ? "binary" : "ascii") << std::endl;
-    for (const auto& c : file.get_comments()) std::cout << "\t[ply_header] Comment: " << c << std::endl;
-    for (const auto& c : file.get_info()) std::cout << "\t[ply_header] Info: " << c << std::endl;
+    mesh->nedges = 0;
+    mesh->max_edges = 200;
+    mesh->edges = (Edge**)malloc(sizeof(Edge*) * mesh->max_edges);
+    mesh->edges_valid = 0;
+    mesh->eat_list_max = 200;
+    mesh->parent_scan = sc;
 
-    for (const auto& e : file.get_elements())
+    for (size_t i = 0; i < vertices.size(); i++)
     {
-        std::cout << "\t[ply_header] element: " << e.name << " (" << e.size << ")" << std::endl;
-        for (const auto& p : e.properties)
-        {
-            std::cout << "\t[ply_header] \tproperty: " << p.name << " (type=" << tinyply::PropertyTable[p.propertyType].str << ")";
-            if (p.isList) std::cout << " (list_type=" << tinyply::PropertyTable[p.listType].str << ")";
-            std::cout << std::endl;
-        }
+        Vector v;
+        v[0] = vertices[i].x();
+        v[1] = vertices[i].y();
+        v[2] = vertices[i].z();
+        make_vertex(mesh, v);
     }
+        
+    for (size_t i = 0; i < facets.size(); i++)
+    {
+        auto v1 = mesh->verts[facets[i][0]];
+        auto v2 = mesh->verts[facets[i][1]];
+        auto v3 = mesh->verts[facets[i][2]];
+        make_triangle(mesh, v1, v2, v3, 100.0);
+    }
+
+    /* print info about polygons */
+    printf("%d triangles\n", mesh->ntris);
+    printf("%d vertices\n", mesh->nverts);
+
+    /* compute vertex normals */
+    find_vertex_normals(mesh);
+
+    /* make guess about what resolution this mesh was created at */
+    int inc = guess_mesh_inc(mesh);
+
+    /* initialize hash table for vertices in mesh */
+    init_table(mesh, 2.0f * get_zipper_resolution() * inc);
+
+    /* find the edges of the mesh */
+    find_mesh_edges(mesh);
+
+    /* replicate this mesh at all levels */
+    for (int j = 0; j < MAX_MESH_LEVELS; j++)
+        sc->meshes[j] = mesh;
+
     //int i, j;
     //PlyFile* ply;
     //int nelems;

@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
     }
 
     // Process
-    //do_it_all();
+    do_it_all();
     //clip_triangles(scans[0], scans[1]);
 
     // Write output

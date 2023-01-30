@@ -1,6 +1,3 @@
-[submodule "src/Vendors/tinyply"]
-	path = src/Vendors/tinyply
-	url = https://github.com/ddiakopoulos/tinyply.git
 [submodule "src/Vendors/googletest"]
 	path = src/Vendors/googletest
 	url = https://github.com/google/googletest.git

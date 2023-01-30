@@ -1,10 +1,20 @@
 {
+    "files.autoGuessEncoding": true,
+
     "cmake.configureOnEdit": false,
     "cmake.configureArgs" : [
-        "-DCMAKE_BUILD_TYPE=Debug"
+        "-DCMAKE_PREFIX_PATH=D:/softwares/Qt/5.15.2/msvc2015_64",
+        "-DCGAL_DIR=D:/Program Files/CGAL-5.5.1",
+        "-DGMP_LIBRARIES=D:/Program Files/gmp/lib/libgmp-10.lib",
+        "-DGMP_INCLUDE_DIR=D:/Program Files/gmp/include",
+        "-DMPFR_LIBRARIES=D:/Program Files/gmp/lib/libmpfr-4.lib",
+        "-DMPFR_INCLUDE_DIR=D:/Program Files/gmp/include",
+        "-DBoost_INCLUDE_DIR=D:/Program Files/boost_1_81_0",
+        "-DEIGEN3_INCLUDE_DIR=D:/Program Files/Eigen3",
+        "-DDEBUG_ARGUES=--gtest_filter="
     ],
     // "cmake.generator": "Ninja",
     "cmake.debugConfig": {
-        "args": ["--gtest_filter=ExampleTest.SimpleFirstTest"]
+        "args": ["--gtest_filter=testCGAL.a_Line_Intersect"]
     }
 }
