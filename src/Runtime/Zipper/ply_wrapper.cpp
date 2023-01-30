@@ -950,8 +950,9 @@ int read_ply(char* filename)
         sc->meshes[j] = mesh;
     return (0);
 }
-
-
+#include <CGAL/Point_set_3.h>
+typedef Kernel::Vector_3 Vector_3;
+typedef CGAL::Point_set_3<Point_3> Point_set;
 int write_ply(Scan* sc, char* filename, int writeInfo)
 {
     Mesh* mesh;
@@ -959,27 +960,40 @@ int write_ply(Scan* sc, char* filename, int writeInfo)
     mesh = sc->meshes[mesh_level];
     std::vector<Point_3> vertices;
     vertices.reserve(mesh->nverts);
+    Point_set points;
     for (int i = 0; i < mesh->nverts; i++)
     {
         Point_3 v = { mesh->verts[i]->coord[0], mesh->verts[i]->coord[1], mesh->verts[i]->coord[2] };
         vertices.push_back(v);
+        points.insert(v);
     }
 
-    std::vector<Facet> facets;
-    facets.reserve(mesh->ntris);
-    /* write out the triangles */
-    for (int i = 0; i < mesh->ntris; i++) {
-        Facet face;
-        face[0] = mesh->tris[i]->verts[0]->index;
-        face[1] = mesh->tris[i]->verts[1]->index;
-        face[2] = mesh->tris[i]->verts[2]->index;
-        facets.push_back(face);
+    std::string fname = filename;
+
+    std::ofstream stream(fname, std::ios::binary);
+
+    if (!stream)
+    {
+        std::cerr << "Error: cannot read file " << fname << std::endl;
+        return EXIT_FAILURE;
     }
-    CGAL::Surface_mesh<Point_3> output_mesh;
-    CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(vertices, facets, output_mesh);
-    std::ofstream f(filename, std::ios_base::binary);
-    CGAL::IO::set_binary_mode(f);
-    CGAL::IO::write_PLY(f, output_mesh);
-    f.close();
+
+    stream << points;
+    //std::vector<Facet> facets;
+    //facets.reserve(mesh->ntris);
+    ///* write out the triangles */
+    //for (int i = 0; i < mesh->ntris; i++) {
+    //    Facet face;
+    //    face[0] = mesh->tris[i]->verts[0]->index;
+    //    face[1] = mesh->tris[i]->verts[1]->index;
+    //    face[2] = mesh->tris[i]->verts[2]->index;
+    //    facets.push_back(face);
+    //}
+    //CGAL::Surface_mesh<Point_3> output_mesh;
+    //CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(vertices, facets, output_mesh);
+    //std::ofstream f(filename, std::ios_base::binary);
+    //CGAL::IO::set_binary_mode(f);
+    //CGAL::IO::write_PLY(f, output_mesh);
+    //f.close();
     return 0;
 }
