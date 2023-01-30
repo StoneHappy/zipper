@@ -51,7 +51,9 @@ int erode_backward(RangeData* plydata, char* continuity, int xx, int yy, int ero
 int decide_continuity(RangeData* plydata, int xx, int yy);
 void delete_ply_geom(RangeData* plydata);
 #endif // 0
-
+#include "zipper.h"
+#include "matrix.h"
+#include "raw.h"
 int read_ply(char* filename);
-
+int write_ply(Scan* sc, char* filename, int writeInfo);
 #endif

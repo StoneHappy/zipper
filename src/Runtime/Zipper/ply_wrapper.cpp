@@ -41,10 +41,11 @@
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Polygon_mesh_processing/IO/polygon_mesh_io.h>
 #include <CGAL/Polygon_mesh_processing/polygon_mesh_to_polygon_soup.h>
+#include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
 #include <CGAL/Surface_mesh.h>
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::Point_3 Point_3;
-
+typedef std::array<std::size_t, 3> Facet; // 三角面索引
 // Internal
 #include "ply_wrapper.h"
 #include "raw.h"
@@ -888,7 +889,6 @@ int read_ply(char* filename)
     sc = new_scan(filename, POLYFILE);
     CGAL::Surface_mesh<Point_3> input_mesh;
     CGAL::Polygon_mesh_processing::IO::read_polygon_mesh(filename, input_mesh);
-    typedef std::array<std::size_t, 3> Facet; // 三角面索引
     std::vector<Point_3> vertices;
     std::vector<Facet> facets;
     CGAL::Polygon_mesh_processing::polygon_mesh_to_polygon_soup(input_mesh, vertices, facets);
@@ -948,151 +948,38 @@ int read_ply(char* filename)
     /* replicate this mesh at all levels */
     for (int j = 0; j < MAX_MESH_LEVELS; j++)
         sc->meshes[j] = mesh;
-
-    //int i, j;
-    //PlyFile* ply;
-    //int nelems;
-    //char** elist;
-    //int file_type;
-    //float version;
-    //int num_elems;
-    //PlyProperty** plist;
-    //int nprops;
-    //A_Vertex vert;
-    //Vector pos;
-    //A_Triangle atri;
-    //char* elem_name;
-    //Scan* sc;
-    //Mesh* mesh;
-    //int inc;
-    //int index;
-    //Vertex* v1, * v2, * v3;
-    //int get_intensity = 0;
-    //int get_confidence = 0;
-    //int has_red = 0;
-    //int has_grn = 0;
-    //int has_blu = 0;
-    //char** obj_info;
-    //int num_obj_info;
-
-    //tri_props[0].offset = toffset(verts);
-    //tri_props[0].count_offset = toffset(nverts);
-
-    //ply = ply_open_for_reading(filename, &nelems, &elist, &file_type, &version);
-    //if (ply == NULL)
-    //    return (1);
-
-    //obj_info = ply_get_obj_info(ply, &num_obj_info);
-
-    //sc = new_scan(filename, POLYFILE);
-
-    //sc->num_obj_info = num_obj_info;
-    //for (i = 0; i < num_obj_info; i++) {
-    //    strcpy(sc->obj_info[i], obj_info[i]);
-    //}
-
-    ///* make one mesh */
-    //sc->meshes[mesh_level] = (Mesh*)malloc(sizeof(Mesh));
-    //mesh = sc->meshes[mesh_level];
-
-    ///* read in the vertices */
-    //plist = ply_get_element_description(ply, "vertex", &num_elems, &nprops);
-    //mesh->nverts = 0;
-    //mesh->max_verts = num_elems + 100;
-    //mesh->verts = (Vertex**)malloc(sizeof(Vertex*) * mesh->max_verts);
-
-    //plist = ply_get_element_description(ply, "face", &num_elems, &nprops);
-    //mesh->ntris = 0;
-    //mesh->max_tris = num_elems + 100;
-    //mesh->tris = (Triangle**)malloc(sizeof(Triangle*) * mesh->max_tris);
-
-    //mesh->nedges = 0;
-    //mesh->max_edges = 200;
-    //mesh->edges = (Edge**)malloc(sizeof(Edge*) * mesh->max_edges);
-    //mesh->edges_valid = 0;
-    //mesh->eat_list_max = 200;
-    //mesh->parent_scan = sc;
-
-    ///* read in the vertices and triangles */
-    //for (i = 0; i < nelems; i++) {
-
-    //    elem_name = elist[i];
-    //    plist = ply_get_element_description(ply, elem_name, &num_elems, &nprops);
-
-    //    if (equal_strings("vertex", elem_name)) {
-
-    //        /* see if the file contains intensities */
-    //        for (j = 0; j < nprops; j++) {
-    //            if (equal_strings("confidence", plist[j]->name))
-    //                get_confidence = 1;
-    //            if (equal_strings("intensity", plist[j]->name))
-    //                get_intensity = 1;
-    //            if (equal_strings("diffuse_red", plist[j]->name))
-    //                has_red = 1;
-    //            if (equal_strings("diffuse_green", plist[j]->name))
-    //                has_grn = 1;
-    //            if (equal_strings("diffuse_blue", plist[j]->name))
-    //                has_blu = 1;
-    //        }
-
-    //        ply_get_property(ply, elem_name, &avert_props[0]);
-    //        ply_get_property(ply, elem_name, &avert_props[1]);
-    //        ply_get_property(ply, elem_name, &avert_props[2]);
-    //        if (get_confidence)
-    //            ply_get_property(ply, elem_name, &avert_props[3]);
-    //        if (get_intensity)
-    //            ply_get_property(ply, elem_name, &avert_props[4]);
-    //        if (has_red && has_grn && has_blu) {
-    //            ply_get_property(ply, elem_name, &avert_props[5]);
-    //            ply_get_property(ply, elem_name, &avert_props[6]);
-    //            ply_get_property(ply, elem_name, &avert_props[7]);
-    //        }
-
-    //        for (j = 0; j < num_elems; j++) {
-    //            ply_get_element(ply, (void*)&vert);
-    //            pos[X] = vert.x;
-    //            pos[Y] = vert.y;
-    //            pos[Z] = vert.z;
-    //            index = make_vertex(mesh, pos);
-    //            mesh->verts[index]->confidence = vert.confidence;
-    //            mesh->verts[index]->intensity = vert.intensity;
-    //            mesh->verts[index]->red = vert.red;
-    //            mesh->verts[index]->grn = vert.grn;
-    //            mesh->verts[index]->blu = vert.blu;
-    //        }
-    //    }
-    //    else if (equal_strings("face", elem_name)) {
-    //        ply_get_element_setup(ply, elem_name, 1, tri_props);
-    //        for (j = 0; j < num_elems; j++) {
-    //            ply_get_element(ply, (void*)&atri);
-    //            v1 = mesh->verts[atri.verts[0]];
-    //            v2 = mesh->verts[atri.verts[1]];
-    //            v3 = mesh->verts[atri.verts[2]];
-    //            make_triangle(mesh, v1, v2, v3, 100.0);
-    //        }
-    //    }
-    //}
-
-    ///* print info about polygons */
-    //printf("%d triangles\n", mesh->ntris);
-    //printf("%d vertices\n", mesh->nverts);
-
-    ///* compute vertex normals */
-    //find_vertex_normals(mesh);
-
-    ///* make guess about what resolution this mesh was created at */
-    //inc = guess_mesh_inc(mesh);
-
-    ///* initialize hash table for vertices in mesh */
-    //init_table(mesh, 2.0f * get_zipper_resolution() * inc);
-
-    ///* find the edges of the mesh */
-    //find_mesh_edges(mesh);
-
-    ///* replicate this mesh at all levels */
-    //for (j = 0; j < MAX_MESH_LEVELS; j++)
-    //    sc->meshes[j] = mesh;
-
-    /* signal that everything went okay */
     return (0);
+}
+
+
+int write_ply(Scan* sc, char* filename, int writeInfo)
+{
+    Mesh* mesh;
+
+    mesh = sc->meshes[mesh_level];
+    std::vector<Point_3> vertices;
+    vertices.reserve(mesh->nverts);
+    for (int i = 0; i < mesh->nverts; i++)
+    {
+        Point_3 v = { mesh->verts[i]->coord[0], mesh->verts[i]->coord[1], mesh->verts[i]->coord[2] };
+        vertices.push_back(v);
+    }
+
+    std::vector<Facet> facets;
+    facets.reserve(mesh->ntris);
+    /* write out the triangles */
+    for (int i = 0; i < mesh->ntris; i++) {
+        Facet face;
+        face[0] = mesh->tris[i]->verts[0]->index;
+        face[1] = mesh->tris[i]->verts[1]->index;
+        face[2] = mesh->tris[i]->verts[2]->index;
+        facets.push_back(face);
+    }
+    CGAL::Surface_mesh<Point_3> output_mesh;
+    CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(vertices, facets, output_mesh);
+    std::ofstream f(filename, std::ios_base::binary);
+    CGAL::IO::set_binary_mode(f);
+    CGAL::IO::write_PLY(f, output_mesh);
+    f.close();
+    return 0;
 }

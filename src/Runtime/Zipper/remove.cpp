@@ -108,7 +108,7 @@ void do_it_all()
     eat_edge_pair(scans[0], scans[1]);
     printf("Zipper: zipper_meshes()\n");
     zipper_meshes(scans[0], scans[1]);
-    printf("Zipper: fill_in_holes()\n");
+    /*printf("Zipper: fill_in_holes()\n");
     fill_in_holes(scans[0], scans[1]);
     printf("Zipper: move_vertices()\n");
     move_vertices(scans[1], scans[0]);
@@ -128,7 +128,7 @@ void do_it_all()
         zipper_meshes(scans[0], scans[2]);
         fill_in_holes(scans[0], scans[2]);
         move_vertices(scans[2], scans[0]);
-    }
+    }*/
 }
 
 /******************************************************************************

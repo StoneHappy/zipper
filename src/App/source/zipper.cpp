@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     //clip_triangles(scans[0], scans[1]);
 
     // Write output
-    //write_ply(scans[0], argv[3], 1);
+    write_ply(scans[0], argv[3], 1);
 }
 
 /******************************************************************************
