@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19 FATAL_ERROR)
 
 project(Zipper VERSION 0.1.0)
-
+project(Zipper LANGUAGES CXX)
 
 option(ENABLE_TEST "Enable google test" OFF)
 option(ENABLE_DOCS "Enable doxygen docs" ON)
