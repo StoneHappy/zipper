@@ -9,5 +9,6 @@ endif()
 
 if(NOT TARGET tinyply)
     add_library(tinyply STATIC ${CMAKE_CURRENT_SOURCE_DIR}/tinyply/source/tinyply.cpp ${CMAKE_CURRENT_SOURCE_DIR}/tinyply/source/tinyply.h)
+    target_include_directories(tinyply PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tinyply/source/)
     set_target_properties(tinyply PROPERTIES FOLDER Vendors)
 endif()

@@ -27,8 +27,8 @@
 
 #ifndef ZIPPER_PLY_WRAPPER_H
 #define ZIPPER_PLY_WRAPPER_H
-
-// Internal
+#if 0
+ // Internal
 #include "zipper.h"
 #include "matrix.h"
 #include "raw.h"
@@ -50,5 +50,8 @@ int erode_forward(RangeData* plydata, char* continuity, int xx, int yy, int erod
 int erode_backward(RangeData* plydata, char* continuity, int xx, int yy, int erodeMax);
 int decide_continuity(RangeData* plydata, int xx, int yy);
 void delete_ply_geom(RangeData* plydata);
+#endif // 0
+
+int read_ply(char* filename);
 
 #endif
