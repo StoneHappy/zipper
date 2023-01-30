@@ -368,12 +368,12 @@ void shuffle(char* list, int num, int size)
 {
     int i, j;
     char* temp;
-    //extern double drand48();
+    //extern double (double)rand()/RAND_MAX;
 
     temp = (char*) malloc(size);
     for (i = num - 1; i > 0; i--) {
 
-        j = drand48() * (i + 1);
+        j = (double)rand()/RAND_MAX * (i + 1);
 
         /* swap i'th and j'th elements */
         byte_copy(temp, list + i * size, size);

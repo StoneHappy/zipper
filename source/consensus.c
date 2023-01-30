@@ -693,9 +693,9 @@ void intersect_segment_with_mesh(Vertex* v, Mesh* mesh, Scan* vscan, Scan* mscan
 
 #if 1
     /* jitter the position of the vertex */
-    wpos[X] += (drand48() - 0.5) * CONSENSUS_JITTER_DIST;
-    wpos[Y] += (drand48() - 0.5) * CONSENSUS_JITTER_DIST;
-    wpos[Z] += (drand48() - 0.5) * CONSENSUS_JITTER_DIST;
+    wpos[X] += ((double)rand()/RAND_MAX - 0.5) * CONSENSUS_JITTER_DIST;
+    wpos[Y] += ((double)rand()/RAND_MAX - 0.5) * CONSENSUS_JITTER_DIST;
+    wpos[Z] += ((double)rand()/RAND_MAX - 0.5) * CONSENSUS_JITTER_DIST;
 #endif
 
     /* build a line segment in the consensus normal direction */

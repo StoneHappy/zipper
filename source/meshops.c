@@ -420,7 +420,7 @@ void split_test(Scan* sc)
     for (i = 0; i < 50; i++) {
         found = 0;
         do {
-            j = floor(drand48() * mesh->ntris);
+            j = floor((double)rand()/RAND_MAX * mesh->ntris);
             tri = mesh->tris[j];
             v1 = tri->verts[0];
             v2 = tri->verts[1];

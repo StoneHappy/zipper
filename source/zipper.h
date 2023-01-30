@@ -33,7 +33,7 @@
 
 // Internal
 #include "matrix.h"
-
+#define PATH_MAX 260
 // Macros
 #define MAX(a,b)    ((a)>(b)?(a):(b))       /* return greater of a and b */
 #define MIN(a,b)    ((a)<(b)?(a):(b))       /* return lesser of a and b */

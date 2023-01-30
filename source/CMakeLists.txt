@@ -26,4 +26,4 @@ set_property(TARGET ${PROGRAM_NAME} PROPERTY C_STANDARD 99)
 #target_link_libraries(${PROGRAM_NAME} -Wl,--gc-sections,--print-gc-sections)
 
 # Libraries
-target_link_libraries(${PROGRAM_NAME} m)
+# target_link_libraries(${PROGRAM_NAME} m)

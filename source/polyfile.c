@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 
 // Internal
@@ -238,7 +239,7 @@ int guess_mesh_inc(Mesh* mesh)
     /* pick a bunch of random triangles and examine their edge lengths */
     len_avg = 0;
     for (i = 0; i < num; i++) {
-        index = drand48() * mesh->ntris;
+        index = (double)rand()/RAND_MAX * mesh->ntris;
         tri = mesh->tris[index];
         for (j = 0; j < 3; j++) {
             vsub(tri->verts[j]->coord, tri->verts[(j + 1) % 3]->coord, diff);
