@@ -32,13 +32,13 @@
 #include <string.h>
 
 // Internal
-#include "zipper.h"
-#include "clip.h"
-#include "consensus.h"
-#include "fill.h"
-#include "remove.h"
-#include "mesh.h"
-#include "ply_wrapper.h"
+#include "Zipper/zipper.h"
+#include "Zipper/clip.h"
+#include "Zipper/consensus.h"
+#include "Zipper/fill.h"
+#include "Zipper/remove.h"
+#include "Zipper/mesh.h"
+#include "Zipper/ply_wrapper.h"
 
 // Globals
 #define SCAN_MAX 200

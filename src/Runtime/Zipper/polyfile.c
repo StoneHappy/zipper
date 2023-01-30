@@ -242,6 +242,7 @@ int guess_mesh_inc(Mesh* mesh)
         index = (double)rand()/RAND_MAX * mesh->ntris;
         tri = mesh->tris[index];
         for (j = 0; j < 3; j++) {
+            const float* src1 = tri->verts[j]->coord;
             vsub(tri->verts[j]->coord, tri->verts[(j + 1) % 3]->coord, diff);
             len = vlen(diff);
             len_avg += len / 3.0;

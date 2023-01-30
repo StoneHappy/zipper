@@ -1,33 +1,45 @@
-## Mesh zippering
+# Zipper
 
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
+## how to use it
+```bash
+# clone repository and submodule
 
-This repository contains 'mesh zippering' code, based on [ZipPack Polygon Mesh Zippering Package](https://graphics.stanford.edu/software/zippack/) version 1.14. The source has been ported from SGI IRIX system to be used on any modern operating system. User interface and mesh alignment code has been removed.
+git clone --recursive https://github.com/StoneHappy/my_cpp_empty_project.git
 
-### Compiling and usage
+# create buid dir
 
-There are no library dependencies, all you need is CMake build system and a C99 compatible compiler. To compile run:
-```
 mkdir build
-cd build
+
+# generate build project
 cmake ..
-make
 ```
 
-Currently the program only zippers together two .ply format meshes using default parameters. The meshes should already contain triangle faces as no triangulation is carried out. Specify the mesh file paths as follows: `zipper src1.ply src2.ply dst.ply`.
+``Ninja`` build tool is recommended!!!!
 
-Most of the original ZipPack functionality still exists, but is not enabled. If you need to change zippering parameters then inspect the constants in `zipper.c` file.
+On the windows platform, add ``vcvars64.bat`` to the environment variable. Type ``vcvars64.bat`` on the command line to configure the current command line environment, and then 
+``cmake -S ./ -B ./build -G Ninja``
 
-### Known issues
+On linx, just ``cmake -S ./ -B ./build -G Ninja``
 
-Some .ply files name vertex elements as `vertex_index`, but the zippering program expects `vertex_indices` identificator. If you get an error about reading .ply files, either change your mesh file header or change `#if 1` to `#if 0` on line 130 of `ply_wrapper.c`.
+## Recommended to use vscode for coding
+Recommended plug-ins:
+```
+clangd
+CMake
+CMake Tools
+CodeLLDB
+Doxygen Documentation Generator 
+Git History
+git-commit-plugin 
+Lua
+```
 
-### License and references
+Install plug-ins, ``Ctrl + Shift + P`` call ``CMake: Configure`` to generate ninja config file.
 
-The code is licensed under 3-clause BSD licence. Copyright belongs to Stanford University.
+``CMake: Set Build Target`` to set build target
 
-If you use this code in your research, please cite:
-> "[Zippered Polygon Meshes from Range Images](https://graphics.stanford.edu/papers/zipper/zipper.pdf)"<br />
->  Greg Turk and Marc Levoy<br />
->  Proceedings of SIGGRAPH '94<br />
->  Pages 311-318
+``CMake: Set Debug Target`` to set debug target
+
+``CMake: Run Without Debug`` to run target, the arguements was configured in ``.vscode/settings.json``
+
+debug configure in ``.vscode/launch.json``
